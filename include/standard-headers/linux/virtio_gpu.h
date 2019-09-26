@@ -55,6 +55,11 @@
  */
 #define VIRTIO_GPU_F_RESOURCE_UUID       2
 
+/*
+ * VIRTIO_GPU_CMD_RESOURCE_CREATE_BLOB
+ */
+#define VIRTIO_GPU_F_RESOURCE_BLOB       3
+
 enum virtio_gpu_ctrl_type {
 	VIRTIO_GPU_UNDEFINED = 0,
 
@@ -71,6 +76,7 @@ enum virtio_gpu_ctrl_type {
 	VIRTIO_GPU_CMD_GET_CAPSET,
 	VIRTIO_GPU_CMD_GET_EDID,
 	VIRTIO_GPU_CMD_RESOURCE_ASSIGN_UUID,
+	VIRTIO_GPU_CMD_RESOURCE_CREATE_BLOB,
 
 	/* 3d commands */
 	VIRTIO_GPU_CMD_CTX_CREATE = 0x0200,
@@ -357,6 +363,33 @@ struct virtio_gpu_resource_assign_uuid {
 struct virtio_gpu_resp_resource_uuid {
 	struct virtio_gpu_ctrl_hdr hdr;
 	uint8_t uuid[16];
+};
+
+/* VIRTIO_GPU_CMD_RESOURCE_CREATE_BLOB */
+struct virtio_gpu_resource_create_blob {
+	struct virtio_gpu_ctrl_hdr hdr;
+	uint32_t resource_id;
+#define VIRTIO_GPU_RES_BLOB_GUEST_MASK   0x000f
+#define VIRTIO_GPU_RES_BLOB_GUEST_NONE   0x0000
+#define VIRTIO_GPU_RES_BLOB_GUEST_SYSTEM 0x0001
+
+#define VIRTIO_GPU_RES_BLOB_HOST_MASK 0x00f0
+#define VIRTIO_GPU_RES_BLOB_HOST_NONE 0x0000
+#define VIRTIO_GPU_RES_BLOB_HOST      0x0010
+
+#define VIRTIO_GPU_RES_BLOB_USE_MASK         0x0f00
+#define VIRTIO_GPU_RES_BLOB_USE_NONE         0x0000
+#define VIRTIO_GPU_RES_BLOB_USE_MAPPABLE     0x0100
+#define VIRTIO_GPU_RES_BLOB_USE_SHAREABLE    0x0200
+#define VIRTIO_GPU_RES_BLOB_USE_CROSS_DEVICE 0x0400
+	uint32_t flags;
+	uint64_t size;
+	uint64_t memory_id;
+	uint32_t nr_entries;
+	uint32_t padding;
+	/*
+	 * sizeof(nr_entries * virtio_gpu_mem_entry) bytes follow
+	 */
 };
 
 #endif
