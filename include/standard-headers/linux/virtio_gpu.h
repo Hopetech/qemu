@@ -64,6 +64,12 @@
  * VIRTIO_GPU_CMD_RESOURCE_UMAP
  */
 #define VIRTIO_GPU_F_HOST_VISIBLE        4
+/*
+ * VIRTIO_GPU_CMD_CREATE_CONTEXT with
+ * VIRTIO_GPU_CONTEXT_VIRGL and
+ * VIRTIO_GPU_CONTEXT_VULKAN
+ */
+#define VIRTIO_GPU_F_CONTEXT_V2          5
 
 enum virtio_gpu_ctrl_type {
 	VIRTIO_GPU_UNDEFINED = 0,
@@ -264,10 +270,12 @@ struct virtio_gpu_resource_create_3d {
 };
 
 /* VIRTIO_GPU_CMD_CTX_CREATE */
+#define VIRTIO_GPU_CONTEXT_VIRGL  1
+#define VIRTIO_GPU_CONTEXT_VULKAN 2
 struct virtio_gpu_ctx_create {
 	struct virtio_gpu_ctrl_hdr hdr;
 	uint32_t nlen;
-	uint32_t padding;
+	uint32_t context_type;
 	char debug_name[64];
 };
 
